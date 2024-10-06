@@ -39,15 +39,31 @@ fn main() {
         });
     }
 
-    let mut indexes = (0..gifters.len()).collect();
+    if gifters.len() == 1 {
+        panic!("Must have more than 1 gifter");
+    }
 
-    index
+    let mut indexes: Vec<usize> = (0..gifters.len()).collect();
 
-    // For each Gifter, assign a reference to another gifter
-    for i in 0..gifters.len() {
-        let rand = rand::thread_rng().gen_range(0..gifters.len());
+    let mut done = false;
+    while !done {
+        debug!("Shuffle!");
+        indexes.shuffle(&mut thread_rng());
+        
+        for i in 0..gifters.len() {
 
-        gifters[i].giftee = Some(rand);
+            if indexes[i] == i {
+                // reshuffle and start over
+                done = false;
+                break;
+            }
+            else {
+                done = true;
+                gifters[i].giftee = Some(indexes[i]);
+            }
+        
+        }
+
     }
     
 
