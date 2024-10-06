@@ -5,6 +5,7 @@
 
 use clap::Parser;
 use rand::thread_rng;
+use rand::Rng;
 use rand::seq::SliceRandom;
 use log::{info, warn, debug};
 
@@ -13,10 +14,14 @@ struct Args {
     gifters: String,
 }
 
+
+#[derive(Debug)]
 struct Gifter {
     name: String,
-    giftee: &Gifter,
+    giftee: Option<usize>,
 }
+
+
 
 fn main() {
     env_logger::init();
@@ -24,30 +29,27 @@ fn main() {
     let args = Args::parse();
     let args = args.gifters.split(",");
 
-    let mut gifters = vec![];
-
+    let mut gifters: Vec<Gifter> = vec![];
+    
+    // For each name given, make it into a Gifter
     for g in args {
-        gifters.push(g.trim());
+        gifters.push(Gifter {
+            name: g.trim().to_string(),
+            giftee: None,
+        });
     }
 
-    let mut giftees = gifters.clone();
-    let person_count = gifters.len();
+    let mut indexes = (0..gifters.len()).collect();
 
-    let mut must_loop = true;
-    while must_loop {
-        giftees.shuffle(&mut thread_rng());
-        
-        for i in 0..person_count {
-            if gifters[i] == giftees[i] {
-                debug!("Giftees {:?} Someone got themself. Retrying...", giftees);
-                must_loop = true;
-            }
-            else {
-                must_loop = false;
-            }
-        }
+    index
+
+    // For each Gifter, assign a reference to another gifter
+    for i in 0..gifters.len() {
+        let rand = rand::thread_rng().gen_range(0..gifters.len());
+
+        gifters[i].giftee = Some(rand);
     }
+    
 
     info!("Gifters {:?}", gifters);
-    info!("Giftees {:?}", giftees);
 }
