@@ -20,31 +20,11 @@ struct Gifter {
     giftee: Option<usize>,
 }
 
-impl Gifter {
-    fn parse_csv(csv: String) -> Vec<Gifter> {
-        let mut gifters: Vec<Gifter> = vec![];
-
-        let args = csv.split(",");
-        
-        // For each name given, make it into a Gifter
-        for g in args {
-            gifters.push(Gifter {
-                name: g.trim().to_string(),
-                giftee: None,
-            });
-        }
-
-        gifters
-    }
-}
-
-
-
 fn main() {
     env_logger::init();
 
     let args = Args::parse();
-    let gifters = Gifter::parse_csv(args.gifters);
+    let gifters = csv_to_gifters(args.gifters);
 
     if gifters.len() == 1 {
         panic!("Must have more than 1 gifter");
@@ -53,6 +33,22 @@ fn main() {
     let gifters = assign_gifters(gifters);
 
     info!("Gifters {:?}", gifters);
+}
+
+fn csv_to_gifters(csv: String) -> Vec<Gifter> {
+    let mut gifters: Vec<Gifter> = vec![];
+
+    let args = csv.split(",");
+    
+    // For each name given, make it into a Gifter
+    for g in args {
+        gifters.push(Gifter {
+            name: g.trim().to_string(),
+            giftee: None,
+        });
+    }
+
+    gifters
 }
 
 fn assign_gifters(mut gifters: Vec<Gifter>) -> Vec<Gifter> {
