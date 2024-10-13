@@ -31,64 +31,41 @@ struct Args {
     gifters: String,
 }
 
-
-#[derive(Debug)]
-struct Gifter {
-    name: String,
-    giftee: Option<usize>,
-}
-
 fn main() {
     env_logger::init();
 
     let args = Args::parse();
-    let gifters = csv_to_gifters(args.gifters);
+    let mut gifters: Vec<String> = vec![];
+
+    for arg in args.gifters.split(",") {
+        gifters.push(arg.trim().to_string());
+    }
 
     if gifters.len() == 1 {
         panic!("Must have more than 1 gifter");
     }
 
-    let gifters = assign_gifters(gifters);
+    let mut pair_index: Vec<usize> = ( 0..gifters.len() ).collect();
 
-    info!("Gifters {:?}", gifters);
-}
-
-fn csv_to_gifters(csv: String) -> Vec<Gifter> {
-    let mut gifters: Vec<Gifter> = vec![];
-
-    let args = csv.split(",");
-    
-    // For each name given, make it into a Gifter
-    for g in args {
-        gifters.push(Gifter {
-            name: g.trim().to_string(),
-            giftee: None,
-        });
-    }
-
-    gifters
-}
-
-fn assign_gifters(mut gifters: Vec<Gifter>) -> Vec<Gifter> {
-    let mut indexes: Vec<usize> = ( 0..gifters.len() ).collect();
+    let mut gift_pairs: Vec<(String, String)> = vec![];
 
     let mut done = false;
     while !done {
         debug!("Shuffle!");
-        indexes.shuffle(&mut thread_rng());
-        
+        pair_index.shuffle(&mut thread_rng());
+
         for i in 0..gifters.len() {
-            if indexes[i] == i {
-                // reshuffle and start over
+            if pair_index[i] == i {
                 done = false;
+                gift_pairs = vec![];
                 break;
             }
             else {
                 done = true;
-                gifters[i].giftee = Some(indexes[i]);
+                gift_pairs.push((gifters[i].clone(), gifters[pair_index[i]].clone()));
             }
         }
     }
 
-    gifters
+    info!("Gifters {:?}", gift_pairs);
 }
