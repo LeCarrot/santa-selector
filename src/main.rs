@@ -1,6 +1,24 @@
 /*
 * How is this gonna work?
 * take in a comma-separated list of names?
+*
+* We have a vec of strings that is our gifters
+*
+* The final gifter pool could be a vec of tuples of vec slices?
+*
+* let gifters = args.gifters.parse_csv; // vector of strings
+*
+* foreach gifters as gifter
+*   let pick = gifters[rand];
+*   
+*   let giftPair = (gifter, pick)
+*
+*   foreach behavior
+*       execute(giftPair)
+*       if flase, regen giftpair
+*
+* Functions for filter behavior
+*   not_itself(giftPair) -> bool
 */
 
 use clap::Parser;
