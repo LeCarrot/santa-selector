@@ -12,14 +12,16 @@ fn main() {
     env_logger::init();
 
     let args = Args::parse();
-    let gifters: Vec<&str> = args.gifters.split(",").map(|x| x.trim()).collect();
+    let gifters: Vec<&str> = args.gifters
+        .split(",")
+        .map(|x| x.trim())
+        .collect();
 
     let mut giftees: Vec<&str> = gifters.clone();
 
     loop {
         giftees.shuffle(&mut thread_rng());
-        let matching = 
-            gifters
+        let matching = gifters
             .iter()
             .zip(giftees.iter())
             .filter(|&(a, b)| a == b)
