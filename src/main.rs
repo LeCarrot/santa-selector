@@ -12,37 +12,24 @@ fn main() {
     env_logger::init();
 
     let args = Args::parse();
-    let mut gifters: Vec<String> = vec![];
+    let gifters: Vec<&str> = args.gifters.split(",").map(|x| x.trim()).collect();
 
-    for arg in args.gifters.split(",") {
-        gifters.push(arg.trim().to_string());
-    }
+    let mut giftees: Vec<&str> = gifters.clone();
 
-    if gifters.len() == 1 {
-        panic!("Must have more than 1 gifter");
-    }
+    loop {
+        giftees.shuffle(&mut thread_rng());
+        let matching = 
+            gifters
+            .iter()
+            .zip(giftees.iter())
+            .filter(|&(a, b)| a == b)
+            .count();
 
-    let mut pair_index: Vec<usize> = ( 0..gifters.len() ).collect();
-
-    let mut gift_pairs: Vec<(String, String)> = vec![];
-
-    let mut done = false;
-    while !done {
-        debug!("Shuffle!");
-        pair_index.shuffle(&mut thread_rng());
-
-        for i in 0..gifters.len() {
-            if pair_index[i] == i {
-                done = false;
-                gift_pairs = vec![];
-                break;
-            }
-            else {
-                done = true;
-                gift_pairs.push((gifters[i].clone(), gifters[pair_index[i]].clone()));
-            }
+        if matching == 0 || giftees.len() <= 1 {
+            break;
         }
     }
 
-    info!("Gifters {:?}", gift_pairs);
+    info!("Gifters {:?}", gifters);
+    info!("Giftees {:?}", giftees);
 }
