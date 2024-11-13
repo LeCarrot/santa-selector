@@ -2,6 +2,8 @@ use clap::Parser;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
 use log::{info, debug};
+use std::fs;
+use std::io::ErrorKind;
 
 #[derive(Parser)]
 struct Args {
@@ -32,6 +34,23 @@ fn main() {
         }
     }
 
-    info!("Gifters {:?}", gifters);
-    info!("Giftees {:?}", giftees);
+    debug!("Gifters {:?}", gifters);
+    debug!("Giftees {:?}", giftees);
+
+
+    // make results directory
+    match fs::create_dir("results") {
+        Ok(_) => (),
+        Err(error) => match error.kind() {
+            ErrorKind::AlreadyExists => (),
+            _ => panic!("Unable to create results directory"),
+        }
+    };
+
+    // print to files
+    for i in 0..gifters.len() {
+        let gifter = gifters[i];
+        let filename = format!("results/{gifter}.txt");
+        fs::write(filename, giftees[i]).expect("Unable to write file");
+    }
 }
