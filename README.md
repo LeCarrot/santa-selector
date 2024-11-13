@@ -3,6 +3,8 @@ Generate Secret Santa pairings digitally.
 Can't get together to physically draw names? 
 Don't want to deal with the last person drawing themself and having to start all over?
 
+This is mostly a project I'm using to learn Rust.
+
 ## How it Works
 This program takes in a list of names as the participents and outputs a file for each one. Each file containes the name of another participent. The user of this program can then send those files (without looking at their contents) to the participents to effectivly generate Secret Santa pairings with minimal hassle. 
 
