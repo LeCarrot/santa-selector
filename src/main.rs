@@ -37,7 +37,6 @@ fn main() {
     debug!("Gifters {:?}", gifters);
     debug!("Giftees {:?}", giftees);
 
-
     // make results directory
     match fs::create_dir("results") {
         Ok(_) => (),
