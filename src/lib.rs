@@ -35,7 +35,6 @@ mod tests {
         for _i in 0..1000 {
             let giftees = santa_shuffle(&gifters, matching);
 
-            //confirm not matching
             let no_matching_elements = gifters.iter()
                 .zip(giftees.iter())
                 .filter(|&(a, b)| a == b)
