@@ -23,7 +23,7 @@ mod tests {
 
     #[test]
     fn one_thousand_shuffles() {
-        let gifters = vec!["Aric", "Joe", "Josh", "Dean", "Aaron"];
+        let gifters = vec!["Jim", "Joe", "Bob", "Jeff", "Aaron"];
 
         let matching = |x: &Vec<&str>| -> bool {
             gifters.iter()
