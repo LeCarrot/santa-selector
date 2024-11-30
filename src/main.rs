@@ -12,20 +12,13 @@ struct Args {
 fn main() {
     env_logger::init();
 
+    // collect inputs
     let args = Args::parse();
     let gifters: Vec<&str> = args.gifters.split(",").map(|x| x.trim()).collect();
 
-    let matching = |x: &Vec<&str>| -> bool {
-        gifters.iter()
-            .zip(x.iter())
-            .filter(|&(a, b)| a == b)
-            .count() > 0
-    };
-
-    let giftees = santa_shuffle(&gifters, matching);
-    let pairs: Vec<_> = gifters.iter().zip(giftees.iter()).collect();
-
-    debug!("Pairs {:?}", pairs);
+    // "the magic"
+    let pairs = gifters.santa_shuffle();
+    debug!("Pairs {:?}", pairs);    // (double check "the magic")
 
     // make results directory
     match fs::create_dir("results") {
@@ -37,9 +30,9 @@ fn main() {
     };
 
     // print to files
-    for i in 0..gifters.len() {
-        let gifter = gifters[i];
+    for i in 0..pairs.len() {
+        let gifter = pairs[i].0;
         let filename = format!("results/{gifter}.txt");
-        fs::write(filename, giftees[i]).expect("Unable to write file");
+        fs::write(filename, pairs[i].1).expect("Unable to write file");
     }
 }
