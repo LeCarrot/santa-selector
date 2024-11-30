@@ -6,7 +6,7 @@ use std::io::ErrorKind;
 
 #[derive(Parser)]
 struct Args {
-    gifters: String,
+    gifters: String, // one string with comma-seperated names
 }
 
 fn main() {
