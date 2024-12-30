@@ -2,6 +2,7 @@ use clap::Parser;
 use log::debug;
 use secret_santa::*;
 use std::fs;
+use rand::thread_rng;
 use std::io::ErrorKind;
 
 #[derive(Parser)]
@@ -17,7 +18,7 @@ fn main() {
     let gifters: Vec<&str> = args.gifters.split(",").map(|x| x.trim()).collect();
 
     // "the magic"
-    let pairs = gifters.santa_shuffle();
+    let pairs = gifters.santa_shuffle(&mut thread_rng());
     debug!("Pairs {:?}", pairs);    // (double check "the magic")
 
     // make results directory

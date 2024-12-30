@@ -1,16 +1,17 @@
-use rand::thread_rng;
+use rand::Rng;
 use rand::seq::SliceRandom;
 
-pub trait SantaShuffle<T> {
-    fn santa_shuffle(&self) -> Vec<(&T, &T)>; 
+pub trait SantaShuffle<T, R> {
+    fn santa_shuffle(&self, rng: &mut R) -> Vec<(&T, &T)>;
 }
 
-impl<T: std::cmp::PartialEq> SantaShuffle<T> for Vec<T>
+impl<T: std::cmp::PartialEq, R: Rng + Sized> SantaShuffle<T, R> for Vec<T>
 {
-    fn santa_shuffle(&self) -> Vec<(&T, &T)> {
+    fn santa_shuffle(&self, rng: &mut R) -> Vec<(&T, &T)>
+    {
         let vec: Vec<&T> = self.iter().collect(); // convert &Vec<T> -> Vec<&T>
         let mut new_vec = vec.clone();
-        new_vec.shuffle(&mut thread_rng());
+        new_vec.shuffle(rng);
 
         let mut pairs: Vec<(&T, &T)> = 
             vec
@@ -20,7 +21,7 @@ impl<T: std::cmp::PartialEq> SantaShuffle<T> for Vec<T>
             .collect();
 
         if pairs.iter().any(|x| x.0 == x.1) {
-            pairs = self.santa_shuffle();
+            pairs = self.santa_shuffle(rng);
         }
 
         pairs
@@ -30,6 +31,7 @@ impl<T: std::cmp::PartialEq> SantaShuffle<T> for Vec<T>
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rand::thread_rng;
 
     #[test]
     fn test_string() {
@@ -41,14 +43,14 @@ mod tests {
             String::from("Aaron")
         ];
 
-        let pairs = gifters.santa_shuffle();
+        let pairs = gifters.santa_shuffle(&mut thread_rng());
         assert!(pairs.iter().all( |&x| x.0 != x.1 ));
     }
     
     #[test]
     fn test_str() {
         let gifters = vec!["Greg", "Joe", "Bob", "Jeff", "Aaron"];
-        let pairs = gifters.santa_shuffle();
+        let pairs = gifters.santa_shuffle(&mut thread_rng());
         assert!(pairs.iter().all( |&x| x.0 != x.1 ));
     }
 }
